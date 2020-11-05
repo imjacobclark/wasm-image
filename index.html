@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <input type="file" id="input">
+
+    <script type="module">
+      import init, { rotate } from './pkg/image_wasm.js'
+      
+      document.querySelector('#input').addEventListener('change', function() {
+        const reader = new FileReader();
+       
+        reader.onload = function() {
+          const arrayBuffer = new Uint8Array(reader.result);
+          run(arrayBuffer)
+        };
+
+        reader.readAsArrayBuffer(this.files[0]);  
+      });
+
+      async function run(content) {
+        await init()
+        const rotatedImage = rotate(content, 180);
+
+        document.getElementById('processedImage').src = URL.createObjectURL(
+          new Blob([rotatedImage.buffer], { type: 'image/png' })
+        );
+      }      
+    </script>
+  </head>
+
+  <body>
+    <img id="processedImage"></div>
+  </body>
+</html>
+
